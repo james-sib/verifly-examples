@@ -1,0 +1,8 @@
+# Dependencies for the Python examples.
+# Each example only needs a subset; install all to run everything.
+
+requests>=2.31           # python/raw_api.py
+verifly-email>=1.0        # python/sdk_example.py
+langchain-verifly>=0.1    # python/langchain_agent.py
+langchain-core>=0.3       # python/langchain_agent.py
+llama-index-tools-verifly>=0.1  # python/llamaindex_tool.py

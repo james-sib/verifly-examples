@@ -1,0 +1,77 @@
+{
+  "name": "Verifly - gate signup",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signup",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "a1",
+      "name": "Signup Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "resource": "email",
+        "operation": "verify",
+        "email": "={{ $json.body.email }}"
+      },
+      "id": "b2",
+      "name": "Verifly Verify",
+      "type": "n8n-nodes-verifly.verifly",
+      "typeVersion": 1,
+      "position": [520, 300],
+      "credentials": {
+        "veriflyApi": { "id": "1", "name": "Verifly API" }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.recommendation }}",
+              "operation": "equals",
+              "value2": "safe_to_send"
+            }
+          ]
+        }
+      },
+      "id": "c3",
+      "name": "Safe to send?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [780, 300]
+    },
+    {
+      "parameters": {},
+      "id": "d4",
+      "name": "Accept signup",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1040, 200]
+    },
+    {
+      "parameters": {},
+      "id": "e5",
+      "name": "Reject signup",
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [1040, 400]
+    }
+  ],
+  "connections": {
+    "Signup Webhook": { "main": [[{ "node": "Verifly Verify", "type": "main", "index": 0 }]] },
+    "Verifly Verify": { "main": [[{ "node": "Safe to send?", "type": "main", "index": 0 }]] },
+    "Safe to send?": {
+      "main": [
+        [{ "node": "Accept signup", "type": "main", "index": 0 }],
+        [{ "node": "Reject signup", "type": "main", "index": 0 }]
+      ]
+    }
+  }
+}
